@@ -189,3 +189,10 @@ window.TABLERO_DATA = {
     }
   ]
 };
+window.TABLERO_SHEETS = {
+  "6":     "https://docs.google.com/spreadsheets/d/e/2PACX-1vSu9uzapoPJ5ByE65p2jXV22PHLX2KaX_MdUGyRlMWdKUUx2p-bswnujLBUChsAv_HN4MJJ30NDIIu8/pub?gid=1776336756&single=true&output=csv",
+  "7":     "https://docs.google.com/spreadsheets/d/e/2PACX-1vSu9uzapoPJ5ByE65p2jXV22PHLX2KaX_MdUGyRlMWdKUUx2p-bswnujLBUChsAv_HN4MJJ30NDIIu8/pub?gid=570905995&single=true&output=csv",
+  "8":     "https://docs.google.com/spreadsheets/d/e/2PACX-1vSu9uzapoPJ5ByE65p2jXV22PHLX2KaX_MdUGyRlMWdKUUx2p-bswnujLBUChsAv_HN4MJJ30NDIIu8/pub?gid=1097805886&single=true&output=csv",
+  "9":     "https://docs.google.com/spreadsheets/d/e/2PACX-1vSu9uzapoPJ5ByE65p2jXV22PHLX2KaX_MdUGyRlMWdKUUx2p-bswnujLBUChsAv_HN4MJJ30NDIIu8/pub?gid=1154618142&single=true&output=csv",
+  "links": "https://docs.google.com/spreadsheets/d/e/2PACX-1vSu9uzapoPJ5ByE65p2jXV22PHLX2KaX_MdUGyRlMWdKUUx2p-bswnujLBUChsAv_HN4MJJ30NDIIu8/pub?gid=382599181&single=true&output=csv"
+};
