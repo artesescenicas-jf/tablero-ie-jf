@@ -6,7 +6,9 @@
 //   pestañas "6","7","8","9" → columnas: tipo,pin,fecha,titulo,cuerpo
 //   pestaña "tareas_6" (opcional) → columnas: materia,titulo,fecha
 //   pestaña "links" → columnas: grado,titulo,url,tipo
-//   pestaña "meta_6" (opcional) → columnas: campo,valor  (driveUrl, libretoUrl, libretoTitulo)
+//   pestaña "meta" (opcional) → columnas: grado,campo,valor  (driveUrl, libretoTitulo, libretoSubtitulo)
+//   pestaña "faq" (opcional) → columnas: pregunta,respuesta
+//   pestaña "video" (opcional) → columnas: campo,valor (titulo, subtitulo, url, dirigidoA)
 //
 // Uso: incluir este script ANTES de backstage.jsx.
 // Devuelve una promesa en window.TABLERO_READY.
@@ -69,6 +71,34 @@
       if (rows) linksGlobal = rows;
     }
 
+    // Meta global (con columna grado)
+    let metaGlobal = null;
+    if (sheets.meta) {
+      const rows = await fetchSheet(sheets.meta);
+      if (rows) metaGlobal = rows;
+    }
+
+    // FAQ global
+    if (sheets.faq) {
+      const rows = await fetchSheet(sheets.faq);
+      if (rows && rows.length) {
+        data.faq = rows
+          .filter(r => (r.pregunta || r.q) && (r.respuesta || r.a))
+          .map(r => ({ q: r.pregunta || r.q, a: r.respuesta || r.a }));
+      }
+    }
+
+    // Video de la semana
+    if (sheets.video) {
+      const rows = await fetchSheet(sheets.video);
+      if (rows && rows.length) {
+        data.videoSemana = data.videoSemana || {};
+        rows.forEach(r => {
+          if (r.campo && r.valor) data.videoSemana[r.campo] = r.valor;
+        });
+      }
+    }
+
     for (const grado of data.grados) {
       const gid = grado.id;
 
@@ -99,7 +129,7 @@
         }
       }
 
-      // Meta (drive, libreto)
+      // Meta por grado (legacy: meta_6, meta_7, ...)
       if (sheets[`meta_${gid}`]) {
         const rows = await fetchSheet(sheets[`meta_${gid}`]);
         if (rows) {
@@ -107,6 +137,13 @@
             if (r.campo && r.valor) grado[r.campo] = r.valor;
           });
         }
+      }
+
+      // Meta desde pestaña global "meta" (columna grado)
+      if (metaGlobal) {
+        metaGlobal.filter(r => r.grado === gid).forEach(r => {
+          if (r.campo && r.valor) grado[r.campo] = r.valor;
+        });
       }
 
       // Links filtrados por grado

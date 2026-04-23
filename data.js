@@ -189,10 +189,17 @@ window.TABLERO_DATA = {
     }
   ]
 };
+
+// ── Conexión con Google Sheets ─────────────────────────────────────
+// Estas URLs son las pestañas de la Sheet publicadas como CSV.
+// Editás la Sheet → Google republica → el tablero se actualiza solo.
 window.TABLERO_SHEETS = {
-  "6":     "https://docs.google.com/spreadsheets/d/e/2PACX-1vSu9uzapoPJ5ByE65p2jXV22PHLX2KaX_MdUGyRlMWdKUUx2p-bswnujLBUChsAv_HN4MJJ30NDIIu8/pub?gid=1776336756&single=true&output=csv",
-  "7":     "https://docs.google.com/spreadsheets/d/e/2PACX-1vSu9uzapoPJ5ByE65p2jXV22PHLX2KaX_MdUGyRlMWdKUUx2p-bswnujLBUChsAv_HN4MJJ30NDIIu8/pub?gid=570905995&single=true&output=csv",
-  "8":     "https://docs.google.com/spreadsheets/d/e/2PACX-1vSu9uzapoPJ5ByE65p2jXV22PHLX2KaX_MdUGyRlMWdKUUx2p-bswnujLBUChsAv_HN4MJJ30NDIIu8/pub?gid=1097805886&single=true&output=csv",
-  "9":     "https://docs.google.com/spreadsheets/d/e/2PACX-1vSu9uzapoPJ5ByE65p2jXV22PHLX2KaX_MdUGyRlMWdKUUx2p-bswnujLBUChsAv_HN4MJJ30NDIIu8/pub?gid=1154618142&single=true&output=csv",
-  "links": "https://docs.google.com/spreadsheets/d/e/2PACX-1vSu9uzapoPJ5ByE65p2jXV22PHLX2KaX_MdUGyRlMWdKUUx2p-bswnujLBUChsAv_HN4MJJ30NDIIu8/pub?gid=382599181&single=true&output=csv"
+  "6":     "https://docs.google.com/spreadsheets/d/e/2PACX-1vRFSBWugdgsqfApc39dTCz23RRM_9KlY-G5yiWYQS_h87mahlCl0o_4N3quvJGhOCPX3rUB0f2wpLGz/pub?gid=2082014789&single=true&output=csv",
+  "7":     "https://docs.google.com/spreadsheets/d/e/2PACX-1vRFSBWugdgsqfApc39dTCz23RRM_9KlY-G5yiWYQS_h87mahlCl0o_4N3quvJGhOCPX3rUB0f2wpLGz/pub?gid=1546295790&single=true&output=csv",
+  "8":     "https://docs.google.com/spreadsheets/d/e/2PACX-1vRFSBWugdgsqfApc39dTCz23RRM_9KlY-G5yiWYQS_h87mahlCl0o_4N3quvJGhOCPX3rUB0f2wpLGz/pub?gid=1101659884&single=true&output=csv",
+  "9":     "https://docs.google.com/spreadsheets/d/e/2PACX-1vRFSBWugdgsqfApc39dTCz23RRM_9KlY-G5yiWYQS_h87mahlCl0o_4N3quvJGhOCPX3rUB0f2wpLGz/pub?gid=461667430&single=true&output=csv",
+  "links": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRFSBWugdgsqfApc39dTCz23RRM_9KlY-G5yiWYQS_h87mahlCl0o_4N3quvJGhOCPX3rUB0f2wpLGz/pub?gid=752067563&single=true&output=csv",
+  "meta":  "https://docs.google.com/spreadsheets/d/e/2PACX-1vRFSBWugdgsqfApc39dTCz23RRM_9KlY-G5yiWYQS_h87mahlCl0o_4N3quvJGhOCPX3rUB0f2wpLGz/pub?gid=641855502&single=true&output=csv",
+  "faq":   "https://docs.google.com/spreadsheets/d/e/2PACX-1vRFSBWugdgsqfApc39dTCz23RRM_9KlY-G5yiWYQS_h87mahlCl0o_4N3quvJGhOCPX3rUB0f2wpLGz/pub?gid=1890758012&single=true&output=csv",
+  "video": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRFSBWugdgsqfApc39dTCz23RRM_9KlY-G5yiWYQS_h87mahlCl0o_4N3quvJGhOCPX3rUB0f2wpLGz/pub?gid=2081248441&single=true&output=csv"
 };
