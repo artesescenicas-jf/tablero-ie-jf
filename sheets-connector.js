@@ -4,8 +4,10 @@
 //
 // Formato esperado por hoja:
 //   pestañas "6","7","8","9" → columnas: tipo,pin,fecha,titulo,cuerpo
-//   pestaña "tareas_6" (opcional) → columnas: materia,titulo,fecha
+//   pestaña "tareas" → columnas: grado,materia,titulo,fecha
 //   pestaña "links" → columnas: grado,titulo,url,tipo
+//   pestaña "descargas" → columnas: grado,nombre,peso,url
+//   pestaña "galeria" → columnas: grado,titulo,fecha,url
 //   pestaña "meta" (opcional) → columnas: grado,campo,valor  (driveUrl, libretoTitulo, libretoSubtitulo)
 //   pestaña "faq" (opcional) → columnas: pregunta,respuesta
 //   pestaña "video" (opcional) → columnas: campo,valor (titulo, subtitulo, url, dirigidoA)
@@ -71,6 +73,27 @@
       if (rows) linksGlobal = rows;
     }
 
+    // Tareas globales (con columna grado)
+    let tareasGlobal = null;
+    if (sheets.tareas) {
+      const rows = await fetchSheet(sheets.tareas);
+      if (rows) tareasGlobal = rows;
+    }
+
+    // Descargas globales (con columna grado)
+    let descargasGlobal = null;
+    if (sheets.descargas) {
+      const rows = await fetchSheet(sheets.descargas);
+      if (rows) descargasGlobal = rows;
+    }
+
+    // Galería global (con columna grado)
+    let galeriaGlobal = null;
+    if (sheets.galeria) {
+      const rows = await fetchSheet(sheets.galeria);
+      if (rows) galeriaGlobal = rows;
+    }
+
     // Meta global (con columna grado)
     let metaGlobal = null;
     if (sheets.meta) {
@@ -117,7 +140,7 @@
         }
       }
 
-      // Tareas
+      // Tareas (legacy por-grado: tareas_6, tareas_7…)
       if (sheets[`tareas_${gid}`]) {
         const rows = await fetchSheet(sheets[`tareas_${gid}`]);
         if (rows && rows.length) {
@@ -125,6 +148,42 @@
             materia: r.materia || '',
             titulo: r.titulo || '',
             fecha: r.fecha || ''
+          }));
+        }
+      }
+
+      // Tareas desde pestaña global "tareas" (columna grado)
+      if (tareasGlobal) {
+        const rows = tareasGlobal.filter(r => r.grado === gid);
+        if (rows.length) {
+          grado.tareas = rows.map(r => ({
+            materia: r.materia || '',
+            titulo: r.titulo || '',
+            fecha: r.fecha || ''
+          }));
+        }
+      }
+
+      // Descargas desde pestaña global "descargas" (columna grado)
+      if (descargasGlobal) {
+        const rows = descargasGlobal.filter(r => r.grado === gid);
+        if (rows.length) {
+          grado.adjuntos = rows.map(r => ({
+            nombre: r.nombre || '',
+            peso: r.peso || '',
+            url: r.url || ''
+          }));
+        }
+      }
+
+      // Galería desde pestaña global "galeria" (columna grado)
+      if (galeriaGlobal) {
+        const rows = galeriaGlobal.filter(r => r.grado === gid);
+        if (rows.length) {
+          grado.galeria = rows.map(r => ({
+            titulo: r.titulo || '',
+            fecha: r.fecha || '',
+            url: r.url || ''
           }));
         }
       }

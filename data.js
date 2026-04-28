@@ -198,8 +198,11 @@ window.TABLERO_SHEETS = {
   "7":     "https://docs.google.com/spreadsheets/d/e/2PACX-1vRFSBWugdgsqfApc39dTCz23RRM_9KlY-G5yiWYQS_h87mahlCl0o_4N3quvJGhOCPX3rUB0f2wpLGz/pub?gid=1546295790&single=true&output=csv",
   "8":     "https://docs.google.com/spreadsheets/d/e/2PACX-1vRFSBWugdgsqfApc39dTCz23RRM_9KlY-G5yiWYQS_h87mahlCl0o_4N3quvJGhOCPX3rUB0f2wpLGz/pub?gid=1101659884&single=true&output=csv",
   "9":     "https://docs.google.com/spreadsheets/d/e/2PACX-1vRFSBWugdgsqfApc39dTCz23RRM_9KlY-G5yiWYQS_h87mahlCl0o_4N3quvJGhOCPX3rUB0f2wpLGz/pub?gid=461667430&single=true&output=csv",
-  "links": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRFSBWugdgsqfApc39dTCz23RRM_9KlY-G5yiWYQS_h87mahlCl0o_4N3quvJGhOCPX3rUB0f2wpLGz/pub?gid=752067563&single=true&output=csv",
+  "links":     "https://docs.google.com/spreadsheets/d/e/2PACX-1vRFSBWugdgsqfApc39dTCz23RRM_9KlY-G5yiWYQS_h87mahlCl0o_4N3quvJGhOCPX3rUB0f2wpLGz/pub?gid=752067563&single=true&output=csv",
   "meta":  "https://docs.google.com/spreadsheets/d/e/2PACX-1vRFSBWugdgsqfApc39dTCz23RRM_9KlY-G5yiWYQS_h87mahlCl0o_4N3quvJGhOCPX3rUB0f2wpLGz/pub?gid=641855502&single=true&output=csv",
   "faq":   "https://docs.google.com/spreadsheets/d/e/2PACX-1vRFSBWugdgsqfApc39dTCz23RRM_9KlY-G5yiWYQS_h87mahlCl0o_4N3quvJGhOCPX3rUB0f2wpLGz/pub?gid=1890758012&single=true&output=csv",
-  "video": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRFSBWugdgsqfApc39dTCz23RRM_9KlY-G5yiWYQS_h87mahlCl0o_4N3quvJGhOCPX3rUB0f2wpLGz/pub?gid=2081248441&single=true&output=csv"
+  "video": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRFSBWugdgsqfApc39dTCz23RRM_9KlY-G5yiWYQS_h87mahlCl0o_4N3quvJGhOCPX3rUB0f2wpLGz/pub?gid=2081248441&single=true&output=csv",
+  "tareas":    "https://docs.google.com/spreadsheets/d/e/2PACX-1vRFSBWugdgsqfApc39dTCz23RRM_9KlY-G5yiWYQS_h87mahlCl0o_4N3quvJGhOCPX3rUB0f2wpLGz/pub?gid=1041465087&single=true&output=csv",
+  "descargas": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRFSBWugdgsqfApc39dTCz23RRM_9KlY-G5yiWYQS_h87mahlCl0o_4N3quvJGhOCPX3rUB0f2wpLGz/pub?gid=215585992&single=true&output=csv",
+  "galeria":   "https://docs.google.com/spreadsheets/d/e/2PACX-1vRFSBWugdgsqfApc39dTCz23RRM_9KlY-G5yiWYQS_h87mahlCl0o_4N3quvJGhOCPX3rUB0f2wpLGz/pub?gid=861067804&single=true&output=csv"
 };
