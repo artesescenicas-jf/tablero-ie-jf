@@ -143,7 +143,7 @@ const Backstage = ({ data }) => {
               {grado.director}
             </div>
             <div style={{ fontSize: 13, color: IETI.muted, marginTop: 6 }}>
-              {grado.avisos.length} anuncios · {grado.tareas.length} entregas pendientes · {grado.links.length} recursos
+              {(grado.avisos||[]).length} anuncios · {(grado.tareas||[]).length} entregas pendientes · {(grado.links||[]).length} recursos
             </div>
           </div>
           <div style={{ textAlign: 'right', fontFamily: '"JetBrains Mono", monospace', fontSize: 10, letterSpacing: '0.2em', color: IETI.muted, textTransform: 'uppercase' }}>
@@ -249,7 +249,7 @@ const Backstage = ({ data }) => {
                 </tr>
               </thead>
               <tbody>
-                {grado.tareas.map((t, i) => (
+                {(grado.tareas||[]).map((t, i) => (
                   <tr key={i} style={{ borderBottom: `1px dashed ${IETI.rule}` }}>
                     <td style={{...tdBS, fontFamily: '"JetBrains Mono", monospace', color: IETI.muted, width: 28}}>
                       {String(i+1).padStart(2,'0')}
@@ -273,7 +273,7 @@ const Backstage = ({ data }) => {
             <div style={{ marginTop: 28 }}>
               <SectionTitleBS num="03" label="Recursos y enlaces" color={grado.color} />
               <div style={{ marginTop: 12 }}>
-                {grado.links.map((l, i) => (
+                {(grado.links||[]).map((l, i) => (
                   <a key={i} href={l.url} target="_blank" rel="noopener" style={{
                     display: 'flex', alignItems: 'center', gap: 10,
                     padding: '10px 0', borderBottom: `1px solid ${IETI.rule}`,
@@ -304,20 +304,30 @@ const Backstage = ({ data }) => {
             <div style={{ marginTop: 28 }}>
               <SectionTitleBS num="04" label="Descargas" color={grado.color} />
               <div style={{ marginTop: 12 }}>
-                {grado.adjuntos.map((a, i) => (
-                  <a key={i} href="#" onClick={e => e.preventDefault()} style={{
-                    display: 'flex', alignItems: 'center', gap: 10,
-                    padding: '10px 12px', marginBottom: 6,
-                    background: '#f5ecd8',
-                    border: `1px solid ${IETI.rule}`,
-                    color: IETI.ink, textDecoration: 'none',
-                    fontFamily: '"JetBrains Mono", monospace', fontSize: 11
-                  }}>
-                    <span style={{ color: grado.color, fontSize: 14 }}>▾</span>
-                    <span style={{ flex: 1 }}>{a.nombre}</span>
-                    <span style={{ color: IETI.muted, fontSize: 10 }}>{a.peso}</span>
-                  </a>
-                ))}
+                {(grado.adjuntos||[]).map((a, i) => {
+                  const hasUrl = a.url && a.url !== '#';
+                  return (
+                    <a key={i}
+                       href={hasUrl ? a.url : '#'}
+                       target={hasUrl ? "_blank" : undefined}
+                       rel={hasUrl ? "noopener" : undefined}
+                       onClick={hasUrl ? undefined : (e => e.preventDefault())}
+                       style={{
+                         display: 'flex', alignItems: 'center', gap: 10,
+                         padding: '10px 12px', marginBottom: 6,
+                         background: '#f5ecd8',
+                         border: `1px solid ${IETI.rule}`,
+                         color: IETI.ink, textDecoration: 'none',
+                         fontFamily: '"JetBrains Mono", monospace', fontSize: 11,
+                         opacity: hasUrl ? 1 : 0.75,
+                         cursor: hasUrl ? 'pointer' : 'default'
+                       }}>
+                      <span style={{ color: grado.color, fontSize: 14 }}>▾</span>
+                      <span style={{ flex: 1 }}>{a.nombre}</span>
+                      <span style={{ color: IETI.muted, fontSize: 10 }}>{a.peso}</span>
+                    </a>
+                  );
+                })}
               </div>
             </div>
           </aside>
@@ -327,13 +337,20 @@ const Backstage = ({ data }) => {
         <div style={{ marginTop: 32, paddingTop: 24, borderTop: `1px dashed ${IETI.navy}` }}>
           <SectionTitleBS num="05" label="Bitácora visual" color={grado.color} />
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: 16, marginTop: 18 }}>
-            {grado.galeria.map((g, i) => (
-              <div key={i} style={{
+            {(grado.galeria||[]).map((g, i) => {
+              const hasUrl = g.url && g.url !== '#';
+              const Tag = hasUrl ? 'a' : 'div';
+              const linkProps = hasUrl ? { href: g.url, target: '_blank', rel: 'noopener' } : {};
+              return (
+              <Tag key={i} {...linkProps} style={{
                 background: IETI.cream,
                 border: `1.5px solid ${IETI.navy}`,
                 padding: 8,
                 boxShadow: `3px 3px 0 ${IETI.navy}`,
-                transform: `rotate(${(i % 3 - 1) * 0.6}deg)`
+                transform: `rotate(${(i % 3 - 1) * 0.6}deg)`,
+                display: 'block',
+                color: IETI.ink, textDecoration: 'none',
+                cursor: hasUrl ? 'pointer' : 'default'
               }}>
                 <div style={{
                   aspectRatio: '4/3',
@@ -356,8 +373,9 @@ const Backstage = ({ data }) => {
                     {g.fecha}
                   </div>
                 </div>
-              </div>
-            ))}
+              </Tag>
+              );
+            })}
           </div>
         </div>
       </div>
@@ -508,7 +526,7 @@ const NotaBS = ({ aviso, idx, gradoColor }) => {
         color: IETI.muted, marginBottom: 8,
         display: 'flex', justifyContent: 'space-between'
       }}>
-        <span style={{ color: gradoColor }}>{TIPO_BS[aviso.tipo].label}</span>
+        <span style={{ color: gradoColor }}>{(TIPO_BS[aviso.tipo] || TIPO_FALLBACK_BS).label}</span>
         <span>{aviso.fecha}</span>
       </div>
       <h3 style={{
@@ -532,7 +550,11 @@ const TIPO_BS = {
   tarea: { label: '◆ entrega' },
   noticia: { label: '◇ noticia' },
   evento: { label: '❖ evento' },
+  concepto: { label: '◈ concepto' },
+  'pregunta/respuesta': { label: '? pregunta' },
+  pregunta: { label: '? pregunta' },
 };
+const TIPO_FALLBACK_BS = { label: '· aviso' };
 
 const FAQItem = ({ item }) => {
   const [open, setOpen] = React.useState(false);
