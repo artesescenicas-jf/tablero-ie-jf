@@ -34,11 +34,13 @@ const TWEAKS = /*EDITMODE-BEGIN*/{
 const App = () => {
   const [tweaks, setTweaks] = React.useState(TWEAKS);
   const [tweaksOpen, setTweaksOpen] = React.useState(false);
-  const [data, setData] = React.useState(window.TABLERO_DATA);
+  const [data, setData] = React.useState(null);
 
   React.useEffect(() => {
     if (window.TABLERO_READY) {
       window.TABLERO_READY.then(d => setData({ ...d }));
+    } else {
+      setData({ ...window.TABLERO_DATA });
     }
     const handler = (e) => {
       if (!e.data || typeof e.data !== 'object') return;
@@ -56,6 +58,8 @@ const App = () => {
     window.parent.postMessage({ type: '__edit_mode_set_keys', edits: { [key]: val } }, '*');
   };
 
+  if (!data) return <Loader />;
+
   const liveData = { ...data, escuela: tweaks.escuela };
 
   return (
@@ -65,6 +69,38 @@ const App = () => {
     </>
   );
 };
+
+const Loader = () => (
+  <div style={{
+    minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center',
+    background: '#e8e1d3', flexDirection: 'column', gap: 18
+  }}>
+    <style>{`
+      @keyframes tablero-spin { to { transform: rotate(360deg); } }
+      @keyframes tablero-pulse { 0%,100% { opacity: 0.4; } 50% { opacity: 1; } }
+    `}</style>
+    <div style={{
+      width: 38, height: 38,
+      border: '3px solid #2B2A6E22',
+      borderTopColor: '#2B2A6E',
+      borderRadius: '50%',
+      animation: 'tablero-spin 0.9s linear infinite'
+    }} />
+    <div style={{
+      fontFamily: '"Playfair Display", serif', fontStyle: 'italic',
+      fontSize: 17, color: '#2B2A6E',
+      animation: 'tablero-pulse 1.6s ease-in-out infinite'
+    }}>
+      Cargando tablero…
+    </div>
+    <div style={{
+      fontFamily: '"JetBrains Mono", monospace', fontSize: 10,
+      letterSpacing: '0.25em', textTransform: 'uppercase', color: '#5a5244'
+    }}>
+      IETI-JF · Artes Escénicas
+    </div>
+  </div>
+);
 
 const TweaksPanel = ({ tweaks, setTweak, onClose }) => (
   <div style={{
