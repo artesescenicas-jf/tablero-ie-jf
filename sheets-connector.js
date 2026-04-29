@@ -101,6 +101,13 @@
       if (rows) metaGlobal = rows;
     }
 
+    // Meta global (filas sin grado → campos del data raíz)
+    if (metaGlobal) {
+      metaGlobal.filter(r => !r.grado || !r.grado.trim()).forEach(r => {
+        if (r.campo && r.valor) data[r.campo] = r.valor;
+      });
+    }
+
     // FAQ global
     if (sheets.faq) {
       const rows = await fetchSheet(sheets.faq);
