@@ -148,7 +148,7 @@ const Backstage = ({ data }) => {
           </div>
           <div style={{ textAlign: 'right', fontFamily: '"JetBrains Mono", monospace', fontSize: 10, letterSpacing: '0.2em', color: IETI.muted, textTransform: 'uppercase' }}>
             Actualizado<br/>
-            <span style={{ color: IETI.navy, fontSize: 14, letterSpacing: 0 }}>22·abr·26</span>
+            <span style={{ color: IETI.navy, fontSize: 14, letterSpacing: 0 }}>{data.actualizado || '—'}</span>
           </div>
         </div>
 
