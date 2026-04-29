@@ -15,6 +15,53 @@ const IETI = {
   rule: '#c8bfa8',
 };
 
+// Reproductor: muestra thumbnail con play button → abre YouTube en pestaña nueva.
+// Evita el error 153 (videos con embed bloqueado por el creador) y carga más rápido.
+const VideoPlayer = ({ videoId, url, titulo, green, navy }) => {
+  const thumb = `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
+  return (
+    <a href={url} target="_blank" rel="noopener" style={{
+      position: 'relative', display: 'block',
+      paddingBottom: '56.25%', height: 0, background: '#000',
+      textDecoration: 'none', overflow: 'hidden'
+    }}>
+      <img src={thumb} alt={titulo} style={{
+        position: 'absolute', inset: 0, width: '100%', height: '100%',
+        objectFit: 'cover', opacity: 0.9,
+        transition: 'opacity 0.2s, transform 0.4s'
+      }}
+        onMouseEnter={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'scale(1.02)'; }}
+        onMouseLeave={e => { e.currentTarget.style.opacity = '0.9'; e.currentTarget.style.transform = 'scale(1)'; }}
+      />
+      <div style={{
+        position: 'absolute', inset: 0,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        background: 'linear-gradient(180deg, rgba(0,0,0,0.05), rgba(0,0,0,0.45))',
+        pointerEvents: 'none'
+      }}>
+        <div style={{
+          width: 76, height: 76, borderRadius: '50%',
+          background: green, color: navy,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          fontSize: 30, paddingLeft: 7, fontWeight: 900,
+          boxShadow: '0 10px 30px rgba(0,0,0,0.55)'
+        }}>▶</div>
+      </div>
+      <div style={{
+        position: 'absolute', bottom: 10, left: 14, right: 14,
+        color: '#fff', display: 'flex', justifyContent: 'space-between',
+        fontFamily: '"JetBrains Mono", monospace', fontSize: 9,
+        letterSpacing: '0.2em', textTransform: 'uppercase',
+        textShadow: '0 1px 4px rgba(0,0,0,0.8)',
+        pointerEvents: 'none'
+      }}>
+        <span>⇗ Abrir en YouTube</span>
+        <span style={{ opacity: 0.85 }}>YouTube</span>
+      </div>
+    </a>
+  );
+};
+
 const Backstage = ({ data }) => {
   const [gradoIdx, setGradoIdx] = React.useState(0);
   const grado = data.grados[gradoIdx];
@@ -339,6 +386,25 @@ const Backstage = ({ data }) => {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: 16, marginTop: 18 }}>
             {(grado.galeria||[]).map((g, i) => {
               const hasUrl = g.url && g.url !== '#';
+              // Detectar si es una imagen real (URL absoluta a imagen) o solo un link al recurso
+              // Convertir URLs de Drive en thumbnails directos
+              let imgSrc = null;
+              if (hasUrl) {
+                const u = g.url;
+                // Drive: https://drive.google.com/file/d/ID/view → thumbnail
+                const driveMatch = u.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
+                const driveOpenMatch = u.match(/drive\.google\.com\/open\?id=([a-zA-Z0-9_-]+)/);
+                if (driveMatch) {
+                  imgSrc = `https://drive.google.com/thumbnail?id=${driveMatch[1]}&sz=w800`;
+                } else if (driveOpenMatch) {
+                  imgSrc = `https://drive.google.com/thumbnail?id=${driveOpenMatch[1]}&sz=w800`;
+                } else if (/\.(jpg|jpeg|png|gif|webp|avif)(\?|$)/i.test(u)) {
+                  imgSrc = u;
+                } else if (/drive\.google\.com\/thumbnail/.test(u)) {
+                  imgSrc = u;
+                }
+                // Si no es ninguno de los anteriores, lo tratamos como link normal sin thumbnail
+              }
               const Tag = hasUrl ? 'a' : 'div';
               const linkProps = hasUrl ? { href: g.url, target: '_blank', rel: 'noopener' } : {};
               return (
@@ -350,20 +416,46 @@ const Backstage = ({ data }) => {
                 transform: `rotate(${(i % 3 - 1) * 0.6}deg)`,
                 display: 'block',
                 color: IETI.ink, textDecoration: 'none',
-                cursor: hasUrl ? 'pointer' : 'default'
-              }}>
+                cursor: hasUrl ? 'pointer' : 'default',
+                transition: 'transform 0.2s'
+              }}
+                onMouseEnter={hasUrl ? e => { e.currentTarget.style.transform = `rotate(${(i % 3 - 1) * 0.6}deg) scale(1.03)`; } : undefined}
+                onMouseLeave={hasUrl ? e => { e.currentTarget.style.transform = `rotate(${(i % 3 - 1) * 0.6}deg) scale(1)`; } : undefined}
+              >
                 <div style={{
                   aspectRatio: '4/3',
-                  background: `
+                  background: imgSrc ? '#000' : `
                     repeating-linear-gradient(-45deg, ${grado.color}15 0 8px, ${grado.color}25 8px 16px)
                   `,
                   border: `1px solid ${IETI.navy}`,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   fontFamily: '"JetBrains Mono", monospace',
                   fontSize: 10, letterSpacing: '0.2em',
-                  color: grado.color
+                  color: grado.color,
+                  overflow: 'hidden',
+                  position: 'relative'
                 }}>
-                  IMG · {String(i+1).padStart(3, '0')}
+                  {imgSrc ? (
+                    <img
+                      src={imgSrc}
+                      alt={g.titulo || `Imagen ${i+1}`}
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      onError={e => {
+                        // Si falla la imagen, mostramos el placeholder
+                        e.currentTarget.style.display = 'none';
+                        const ph = e.currentTarget.nextSibling;
+                        if (ph) ph.style.display = 'flex';
+                      }}
+                    />
+                  ) : null}
+                  <span style={{
+                    display: imgSrc ? 'none' : 'flex',
+                    position: 'absolute', inset: 0,
+                    alignItems: 'center', justifyContent: 'center',
+                    background: `repeating-linear-gradient(-45deg, ${grado.color}15 0 8px, ${grado.color}25 8px 16px)`
+                  }}>
+                    IMG · {String(i+1).padStart(3, '0')}
+                  </span>
                 </div>
                 <div style={{ padding: '8px 4px 2px' }}>
                   <div style={{ fontFamily: '"Playfair Display", serif', fontSize: 13, fontStyle: 'italic', lineHeight: 1.2 }}>
@@ -383,41 +475,65 @@ const Backstage = ({ data }) => {
       {/* Secciones globales: FAQ + Video de la semana */}
       <div style={{ display: 'grid', gridTemplateColumns: '1.3fr 1fr', gap: 20, marginBottom: 24 }}>
         {/* Video de la semana */}
-        {data.videoSemana && (
-          <a href={data.videoSemana.url} target="_blank" rel="noopener" style={{
+        {data.videoSemana && (() => {
+          const url = data.videoSemana.url || '';
+          // Extraer videoId de cualquier formato de YouTube
+          const m = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|v\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+          const videoId = m ? m[1] : null;
+          const embedUrl = videoId ? `https://www.youtube.com/embed/${videoId}` : null;
+
+          return (
+          <div style={{
             background: IETI.navy, color: IETI.cream,
             border: `1.5px solid ${IETI.navy}`,
-            padding: '22px 26px',
-            textDecoration: 'none',
             position: 'relative',
             overflow: 'hidden',
-            display: 'block'
+            display: 'flex',
+            flexDirection: 'column'
           }}>
             <div style={{
               position: 'absolute', top: -30, right: -30,
               width: 180, height: 180, borderRadius: '50%',
-              background: IETI.green, opacity: 0.18
+              background: IETI.green, opacity: 0.18,
+              pointerEvents: 'none'
             }} />
-            <div style={{ position: 'relative' }}>
+            <div style={{ position: 'relative', padding: '22px 26px 14px' }}>
               <div style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 10, letterSpacing: '0.3em', textTransform: 'uppercase', color: IETI.green, marginBottom: 8 }}>
                 ▷ Video recomendado de la semana
               </div>
               <div style={{
                 fontFamily: '"Playfair Display", serif',
-                fontSize: 26, fontStyle: 'italic', fontWeight: 700, lineHeight: 1.15
+                fontSize: 22, fontStyle: 'italic', fontWeight: 700, lineHeight: 1.15
               }}>
                 {data.videoSemana.titulo}
               </div>
-              <div style={{ fontSize: 14, color: '#e8e1d3', marginTop: 8, lineHeight: 1.5 }}>
-                {data.videoSemana.subtitulo}
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 14, fontFamily: '"JetBrains Mono", monospace', fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: IETI.green }}>
-                <span>⇗ Ver en YouTube</span>
-                <span style={{ opacity: 0.7 }}>{data.videoSemana.dirigidoA}</span>
-              </div>
+              {data.videoSemana.subtitulo && (
+                <div style={{ fontSize: 13, color: '#e8e1d3', marginTop: 6, lineHeight: 1.5 }}>
+                  {data.videoSemana.subtitulo}
+                </div>
+              )}
             </div>
-          </a>
-        )}
+
+            {videoId ? (
+              <VideoPlayer videoId={videoId} url={url} titulo={data.videoSemana.titulo} green={IETI.green} navy={IETI.navy} />
+            ) : (
+              <a href={url} target="_blank" rel="noopener" style={{
+                padding: '40px 26px', color: IETI.green, textDecoration: 'none',
+                fontFamily: '"JetBrains Mono", monospace', fontSize: 12, letterSpacing: '0.2em', textTransform: 'uppercase'
+              }}>⇗ Abrir video</a>
+            )}
+
+            <div style={{ position: 'relative', padding: '12px 26px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontFamily: '"JetBrains Mono", monospace', fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: IETI.green, borderTop: `1px solid ${IETI.green}33` }}>
+              {videoId ? (
+                <a href={url} target="_blank" rel="noopener" style={{ color: IETI.green, textDecoration: 'none' }}>
+                  ⇗ Ver en YouTube
+                </a>
+              ) : <span />}
+              <span style={{ opacity: 0.7 }}>{data.videoSemana.dirigidoA}</span>
+            </div>
+          </div>
+          );
+        })()}
 
         {/* FAQ */}
         {data.faq && (
